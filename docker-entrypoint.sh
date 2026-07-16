@@ -32,10 +32,12 @@ if [ "$OSRM_MODE" == "CREATE" ]; then
     osrm-extract $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osm.pbf -p /osrm-profiles/$OSRM_GRAPH_PROFILE.lua
     osrm-contract $OSRM_DATA_PATH/$OSRM_DATA_LABEL.osrm
 
-    if [ ! -z "$OSRM_SA_KEY_PATH" ] && [ ! -z "$OSRM_PROJECT_ID" ] && [ ! -z "$OSRM_GS_BUCKET" ]; then
-    
-        # Activate the service account to access storage
-        gcloud auth activate-service-account --key-file $OSRM_SA_KEY_PATH
+    if [ ! -z "$OSRM_PROJECT_ID" ] && [ ! -z "$OSRM_GS_BUCKET" ]; then
+
+        # Activate the service account to access storage (skip when using Workload Identity)
+        if [ ! -z "$OSRM_SA_KEY_PATH" ]; then
+            gcloud auth activate-service-account --key-file $OSRM_SA_KEY_PATH
+        fi
         # Set the Google Cloud project ID
         gcloud config set project $OSRM_PROJECT_ID
 
@@ -46,10 +48,12 @@ if [ "$OSRM_MODE" == "CREATE" ]; then
     
 else
 
-    if [ ! -z "$OSRM_SA_KEY_PATH" ] && [ ! -z "$OSRM_PROJECT_ID" ] && [ ! -z "$OSRM_GS_BUCKET" ]; then
+    if [ ! -z "$OSRM_PROJECT_ID" ] && [ ! -z "$OSRM_GS_BUCKET" ]; then
 
-        # Activate the service account to access storage
-        gcloud auth activate-service-account --key-file $OSRM_SA_KEY_PATH
+        # Activate the service account to access storage (skip when using Workload Identity)
+        if [ ! -z "$OSRM_SA_KEY_PATH" ]; then
+            gcloud auth activate-service-account --key-file $OSRM_SA_KEY_PATH
+        fi
         # Set the Google Cloud project ID
         gcloud config set project $OSRM_PROJECT_ID
 
